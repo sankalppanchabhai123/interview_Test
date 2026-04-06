@@ -4,13 +4,12 @@ const bcrypt = require("bcryptjs")
 const blacklistToken = require("../modules/tokenblocklist")
 
 function getAuthCookieOptions() {
-    const isProd = process.env.NODE_ENV === "production";
 
     return {
         httpOnly: true,
-        secure: isProd,
-        sameSite: isProd ? "none" : "lax",
-        maxAge: 24 * 60 * 60 * 1000,
+        secure: true,
+        sameSite: "None",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
     };
 }
 
