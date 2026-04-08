@@ -1,10 +1,16 @@
-const app = require("./src/app");
-const connectDb = require("./src/config/database");
-
+let appInstance;
 let dbConnectionPromise;
+
+function getApp() {
+    if (!appInstance) {
+        appInstance = require("./src/app");
+    }
+    return appInstance;
+}
 
 async function ensureDbConnection() {
     if (!dbConnectionPromise) {
+        const connectDb = require("./src/config/database");
         dbConnectionPromise = connectDb().catch((error) => {
             dbConnectionPromise = null;
             throw error;
@@ -16,6 +22,7 @@ async function ensureDbConnection() {
 
 module.exports = async (req, res) => {
     try {
+        const app = getApp();
         const path = req.url?.split("?")[0];
         if (path === "/" || path === "/health") {
             return app(req, res);
@@ -33,6 +40,7 @@ module.exports = async (req, res) => {
 };
 
 if (require.main === module) {
+    const app = getApp();
     ensureDbConnection()
         .then(() => {
             const port = process.env.PORT || 3000;
