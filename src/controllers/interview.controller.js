@@ -1,23 +1,32 @@
-const pdfParse = require("pdf-parse")
 const { tempResult: generateInterviewReport } = require("../services/test");
 const { interviewReportModel } = require("../modules/interviewReport");
 
 async function generateInterviewReportController(req, res) {
+    if (!req.file?.buffer) {
+        return res.status(400).json({
+            message: "Resume PDF is required",
+        });
+    }
 
-    const data = new Uint8Array(
-        req.file.buffer.buffer,
-        req.file.buffer.byteOffset,
-        req.file.buffer.byteLength
-    );
-
-    const resumeContent = await (new pdfParse.PDFParse(data)).getText();
+    let resumeText = "";
+    try {
+        // Lazy-load parser so a parser/runtime mismatch does not crash server startup.
+        const pdfParse = require("pdf-parse");
+        const parsedResume = await pdfParse(req.file.buffer);
+        resumeText = parsedResume?.text ?? "";
+    } catch (error) {
+        return res.status(400).json({
+            message: "Failed to parse resume PDF",
+            error: error.message,
+        });
+    }
 
     // Accept both camelCase and lowercase field names from clients.
     const selfdescription = req.body.selfdescription ?? req.body.selfDescription;
     const jobdescription = req.body.jobdescription ?? req.body.jobDescription;
 
     const result = await generateInterviewReport({
-        resume: resumeContent.text,
+        resume: resumeText,
         selfdescription,
         jobdescription,
     })
@@ -26,7 +35,7 @@ async function generateInterviewReportController(req, res) {
 
     const interviewReport = await interviewReportModel.create({
         user: userId,
-        resume: resumeContent.text,
+        resume: resumeText,
         selfDescription: selfdescription,
         jobDescription: jobdescription,
         ...result,
