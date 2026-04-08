@@ -16,6 +16,11 @@ async function ensureDbConnection() {
 
 module.exports = async (req, res) => {
     try {
+        const path = req.url?.split("?")[0];
+        if (path === "/" || path === "/health") {
+            return app(req, res);
+        }
+
         await ensureDbConnection();
         return app(req, res);
     } catch (error) {

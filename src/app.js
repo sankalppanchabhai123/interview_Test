@@ -36,6 +36,10 @@ app.get('/', (req, res) => {
     return res.send("server is in building phase");
 })
 
+app.get('/health', (req, res) => {
+    return res.status(200).json({ status: "ok" });
+})
+
 app.use("/api/auth/", authRoute);
 app.use("/api/interview/", interviewroute);
 

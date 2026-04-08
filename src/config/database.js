@@ -7,7 +7,11 @@ async function connectDb() {
     }
 
     try {
-        await mongoose.connect(process.env.MONGO_URL);
+        await mongoose.connect(process.env.MONGO_URL, {
+            serverSelectionTimeoutMS: 5000,
+            connectTimeoutMS: 5000,
+            socketTimeoutMS: 20000,
+        });
         console.log("db connected");
     } catch (err) {
         throw new Error(`Database connection failed: ${err.message}`);
