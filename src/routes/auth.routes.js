@@ -31,6 +31,7 @@ authRoute.post("/logout", authUserController.logoutUserController);
  * @access private 
  */
 authRoute.get("/log-date", authMiddlware.authUser, authUserController.getMeController);
+authRoute.get("/me", authMiddlware.authUser, authUserController.getMeController);
 
 
 module.exports = authRoute;

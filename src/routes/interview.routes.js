@@ -9,7 +9,7 @@ const interviewroute = express.Router();
 /**
  * @route GET /api/description/interview 
  * @description route to get the data from the db
- * @access public  
+ * @access private  
  */
 interviewroute.post("/", authUser, upload.single('resume'), generateInterviewReportController);
 interviewroute.get("/mine", authUser, getMyInterviewReportsController);
