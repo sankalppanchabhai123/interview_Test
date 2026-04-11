@@ -9,7 +9,6 @@ const allowedOrigins = [
     "http://localhost:5173",
     "http://localhost:5174",
     "https://interview-ai-api-nu.vercel.app",
-    "https://interview-ai-client-pearl.vercel.app"
     process.env.FRONTEND_URL,
 ].filter(Boolean);
 
