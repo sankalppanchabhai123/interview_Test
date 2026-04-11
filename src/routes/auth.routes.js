@@ -19,6 +19,13 @@ authRoute.post("/register", authUserController.registerUserController);
 authRoute.post("/login", authUserController.loginUserController);
 
 /**
+ * @route POST /api/auth/google
+ * @description login/register user with Google ID token
+ * @access Public
+ */
+authRoute.post("/google", authUserController.googleAuthController);
+
+/**
  * @route GET /api/auth/login
  * @description login user with email and password 
  * @access Public 
