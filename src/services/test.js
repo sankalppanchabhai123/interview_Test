@@ -6,6 +6,36 @@ const puppeteer = require("puppeteer");
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
+async function launchPdfBrowser() {
+    try {
+        return await puppeteer.launch({
+            headless: "new",
+            args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        });
+    } catch (puppeteerError) {
+        if (!process.env.VERCEL) {
+            throw puppeteerError;
+        }
+
+        try {
+            const chromium = require("@sparticuz/chromium-min");
+            const puppeteerCore = require("puppeteer-core");
+            const executablePath = await chromium.executablePath();
+
+            return await puppeteerCore.launch({
+                args: chromium.args,
+                defaultViewport: chromium.defaultViewport,
+                executablePath,
+                headless: chromium.headless,
+            });
+        } catch (serverlessError) {
+            throw new Error(
+                `Failed to launch browser on serverless runtime. Local launch: ${puppeteerError.message}. Serverless launch: ${serverlessError.message}`
+            );
+        }
+    }
+}
+
 const interviewReportSchema = z.object({
     matchScore: z.number().describe("A score between 0 and 100 indicating how well candidate's profile matches the job description"),
     interviewQuestion: z.array(z.object({
@@ -569,10 +599,7 @@ async function generateResumePdf({ resume, selfDescription, jobDescription }) {
 
         // Step 2: Convert HTML to PDF using Puppeteer
         console.log("Converting HTML to PDF...");
-        const browser = await puppeteer.launch({
-            headless: 'new',
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
-        });
+        const browser = await launchPdfBrowser();
 
         try {
             const page = await browser.newPage();
