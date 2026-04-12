@@ -124,12 +124,15 @@ async function generateResumePdfController(req, res) {
             jobDescription,
         });
 
+        const pdfBytes = Buffer.isBuffer(pdfBuffer) ? pdfBuffer : Buffer.from(pdfBuffer);
+
         res.set({
             "Content-Type": "application/pdf",
             "Content-Disposition": `attachment; filename="Resume_${interviewReportId}.pdf"`,
+            "Content-Length": String(pdfBytes.length),
         });
 
-        return res.send(pdfBuffer);
+        return res.send(pdfBytes);
     } catch (error) {
         return res.status(500).json({
             message: "Failed to generate resume PDF",
