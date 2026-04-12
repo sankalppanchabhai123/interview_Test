@@ -18,7 +18,7 @@ async function launchPdfBrowser() {
         }
 
         try {
-            const chromium = require("@sparticuz/chromium-min");
+            const chromium = require("@sparticuz/chromium");
             const puppeteerCore = require("puppeteer-core");
             const executablePath = await chromium.executablePath();
 

@@ -11,7 +11,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@sparticuz/chromium-min": "^138.0.2",
+    "@sparticuz/chromium": "^138.0.2",
     "@google/genai": "^1.47.0",
     "@google/generative-ai": "^0.24.1",
     "bcryptjs": "^3.0.3",
