@@ -3,6 +3,8 @@ const authRoute = require("./routes/auth.routes");
 const cookieParser = require("cookie-parser")
 const cors = require("cors");
 const interviewroute = require("./routes/interview.routes");
+const { authUser } = require("./middlewares/auth.middleware");
+const { generateResumePdfController } = require("./controllers/interview.controller");
 const app = express();
 
 const allowedOrigins = [
@@ -45,6 +47,7 @@ app.get('/health', (req, res) => {
 
 app.use("/api/auth/", authRoute);
 app.use("/api/interview/", interviewroute);
+app.post("/api/resume/pdf/:interviewReportId", authUser, generateResumePdfController);
 
 
 module.exports = app;
